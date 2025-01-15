@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Antojitos Mexicanos - Menú Virtual Profesional</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -17,31 +18,31 @@
     </header>
 
     <main class="main-content">
-        <section id="menu" class="menu-grid">
+        <section id="menu" class="menu-grid" aria-label="Menú de platillos">
             <!-- Menu items will be dynamically inserted here -->
         </section>
 
-        <section id="order-summary" class="order-summary">
+        <section id="order-summary" class="order-summary" aria-label="Resumen del pedido">
             <h2 class="section-title">Tu Pedido</h2>
             <ul id="order-items" class="order-items"></ul>
             <p class="total-price">Total: $<span id="total-price">0.00</span></p>
             <button id="clear-order" class="btn btn-secondary">Limpiar Pedido</button>
         </section>
 
-        <section id="order-options" class="order-options">
+        <section id="order-options" class="order-options" aria-label="Opciones de pedido">
             <h2 class="section-title">Realizar Pedido</h2>
             <button id="whatsapp-order" class="btn btn-whatsapp">
-                <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                <i class="fab fa-whatsapp" aria-hidden="true"></i> Pedir por WhatsApp
             </button>
             <button id="messenger-order" class="btn btn-messenger">
-                <i class="fab fa-facebook-messenger"></i> Pedir por Messenger
+                <i class="fab fa-facebook-messenger" aria-hidden="true"></i> Pedir por Messenger
             </button>
         </section>
     </main>
 
-    <div id="confirmation-modal" class="modal">
-        <div class="modal-content">
-            <h2 class="modal-title">Confirmar Pedido</h2>
+    <div id="confirmation-modal" class="modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-labelledby="modal-title">
+            <h2 id="modal-title" class="modal-title">Confirmar Pedido</h2>
             <div id="modal-order-summary" class="modal-order-summary"></div>
             <p class="modal-total">Total: $<span id="modal-total-price">0.00</span></p>
             <div id="customer-info" class="customer-info">
@@ -49,6 +50,8 @@
                 <input type="text" id="customer-name" placeholder="Ingresa tu nombre" required>
             </div>
             <div id="location-input" class="location-input">
+                <label for="user-location">Tu ubicación:</label>
+                <input type="text" id="user-location" placeholder="Ingresa tu dirección" required>
                 <button id="get-location" class="btn btn-location">Obtener ubicación actual</button>
                 <p id="location-status" class="location-status"></p>
             </div>

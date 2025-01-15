@@ -1,10 +1,10 @@
 const menuItems = [
-    { id: 1, name: 'Tacos al Pastor', price: 15, image: 'https://via.placeholder.com/300x200' },
-    { id: 2, name: 'Quesadillas', price: 20, image: 'https://via.placeholder.com/300x200' },
-    { id: 3, name: 'Enchiladas', price: 25, image: 'https://via.placeholder.com/300x200' },
-    { id: 4, name: 'Guacamole', price: 18, image: 'https://via.placeholder.com/300x200' },
-    { id: 5, name: 'Tamales', price: 22, image: 'https://via.placeholder.com/300x200' },
-    { id: 6, name: 'Elote', price: 12, image: 'https://via.placeholder.com/300x200' },
+    { id: 1, name: 'Tacos al Pastor', price: 15, image: 'https://placeholder.com/300x200' },
+    { id: 2, name: 'Quesadillas', price: 20, image: 'https://placeholder.com/300x200' },
+    { id: 3, name: 'Enchiladas', price: 25, image: 'https://placeholder.com/300x200' },
+    { id: 4, name: 'Guacamole', price: 18, image: 'https://placeholder.com/300x200' },
+    { id: 5, name: 'Tamales', price: 22, image: 'https://placeholder.com/300x200' },
+    { id: 6, name: 'Elote', price: 12, image: 'https://placeholder.com/300x200' },
 ];
 
 const menuContainer = document.getElementById('menu');
@@ -19,12 +19,12 @@ const modalTotalPrice = document.getElementById('modal-total-price');
 const sendOrderBtn = document.getElementById('send-order');
 const cancelOrderBtn = document.getElementById('cancel-order');
 const customerNameInput = document.getElementById('customer-name');
-const userLocationInput = document.getElementById('user-location');
 const getLocationBtn = document.getElementById('get-location');
 const locationStatus = document.getElementById('location-status');
 
 let order = [];
 let currentPlatform = '';
+let userLocationLink = '';
 
 function renderMenu() {
     menuContainer.innerHTML = menuItems.map(item => `
@@ -123,42 +123,45 @@ function getCurrentLocation() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-            userLocationInput.value = `${latitude}, ${longitude}`;
-            locationStatus.textContent = "Ubicación obtenida con éxito";
+            userLocationLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+            locationStatus.innerHTML = `Ubicación obtenida. <a href="${userLocationLink}" target="_blank">Ver en mapa</a>`;
+            getLocationBtn.disabled = true;
         }, function(error) {
             console.error("Error al obtener la ubicación:", error);
-            locationStatus.textContent = "No se pudo obtener la ubicación. Por favor, ingrésala manualmente.";
+            locationStatus.textContent = "No se pudo obtener la ubicación. Por favor, inténtalo de nuevo.";
         });
     } else {
-        locationStatus.textContent = "Tu navegador no soporta geolocalización. Por favor, ingresa tu ubicación manualmente.";
+        locationStatus.textContent = "Tu navegador no soporta geolocalización.";
     }
 }
 
 function sendOrderWithLocation() {
     const customerName = customerNameInput.value.trim();
-    const location = userLocationInput.value.trim();
 
     if (!customerName) {
         alert('Por favor, ingresa tu nombre antes de enviar el pedido.');
         return;
     }
 
-    if (!location) {
-        alert('Por favor, ingresa tu ubicación antes de enviar el pedido.');
+    if (!userLocationLink) {
+        alert('Por favor, obtén tu ubicación antes de enviar el pedido.');
         return;
     }
 
     const orderText = order.map(item => `${item.name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`).join('\n');
     const total = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const message = `¡Nuevo pedido de ${customerName}!\n\n${orderText}\n\nTotal: $${total.toFixed(2)}\n\nUbicación de entrega: ${location}`;
+    const message = `¡Nuevo pedido de ${customerName}!\n\n${orderText}\n\nTotal: $${total.toFixed(2)}\n\nUbicación de entrega: ${userLocationLink}`;
 
     let url;
-    if (currentPlatform === 'whatsapp') {
-        // Reemplaza '1234567890' con el número de WhatsApp de tu negocio
-        url = `https://wa.me/524412822828?text=${encodeURIComponent(message)}`;
+    if(currentPlatform ==='whatsapp'){
+        const phoneNumber ='4412822828';
+        url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        window.location.href=url;
+
+    
     } else if (currentPlatform === 'messenger') {
         // Reemplaza 'TU_ID_DE_PAGINA' con el ID de tu página de Facebook
-        url = `https://www.facebook.com/dialog/send?app_id=TU_APP_ID&link=${encodeURIComponent(window.location.href)}&redirect_uri=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(message)}`;
+        url = `https://m.me/TU_ID_DE_PAGINA?ref=${encodeURIComponent(message)}`;
     }
 
     if (url) {
@@ -167,8 +170,9 @@ function sendOrderWithLocation() {
 
     hideConfirmationModal();
     clearOrder();
-    userLocationInput.value = "";
+    userLocationLink = '';
     locationStatus.textContent = "";
+    getLocationBtn.disabled = false;
 }
 
 clearOrderBtn.addEventListener('click', clearOrder);
@@ -178,7 +182,7 @@ sendOrderBtn.addEventListener('click', sendOrderWithLocation);
 cancelOrderBtn.addEventListener('click', hideConfirmationModal);
 getLocationBtn.addEventListener('click', getCurrentLocation);
 
-// Limpiar el pedido cuando se cierra la ventana o se recarga la página
+// Limpiar el pe recarga la págedido cuando se cierra la ventana o sina
 window.addEventListener('beforeunload', clearOrder);
 
 renderMenu();
